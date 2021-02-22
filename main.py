@@ -9,9 +9,6 @@
 
 import app
 
-#import kamxl
-
-
 if __name__ == "__main__":
     app = app.Application()
     app.mainloop()

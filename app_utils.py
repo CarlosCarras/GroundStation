@@ -9,6 +9,7 @@
 
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import filedialog
 
 
 GUI_COLOR = '#0D1B46'
@@ -46,3 +47,11 @@ def confirm_input(telecom_str):
                                          default='no')
     if response == 'yes': return 1
     return 0
+
+def get_filename(filetype, ext=".csv"):
+    file_browser = tk.Tk()
+    file_browser.withdraw()
+    filename = filedialog.askopenfilename(initialdir=".",
+                                          title="Select a " + filetype + " File",
+                                          filetypes=((filetype, "*"+ext), ("all files", "*.*")))
+    return filename

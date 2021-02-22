@@ -3,7 +3,7 @@
 '''
 @author      : Carlos Carrasquillo
 @created     : February 21, 2021
-@modified    : February 21, 2021
+@modified    : February 22, 2021
 @description : generates a GUI for telecommand selection
 '''
 
@@ -54,6 +54,7 @@ class Application(tk.Frame):
         self.create_button("Toggle Debug LED", app_callbacks.debug_led_toggle_cb)
         self.create_button("Turn Off Debug LED", app_callbacks.debug_led_off_cb)
         self.create_button("Turn On Debug LED", app_callbacks.debug_led_on_cb)
+        self.create_button("Update Guidance", app_callbacks.update_guidance_cb)
 
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=self.master.destroy)

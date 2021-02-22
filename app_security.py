@@ -46,13 +46,15 @@ def launch_pwd_prompt(win):
 
     pwdbox = tk.Entry(win, show='*')
 
-    def onpwdentry(evt):
+    def onokclick():
+        nonlocal pwdbox
+
         password = pwdbox.get()
+        pwdbox.delete(0, tk.END)
         check_password(win, password)
 
-    def onokclick():
-        password = pwdbox.get()
-        check_password(win, password)
+    def onpwdentry(evt):
+        onokclick()
 
     tk.Label(win, text='Admin Password').pack(side='top')
     pwdbox.pack(side='top')

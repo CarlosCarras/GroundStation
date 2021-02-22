@@ -3,7 +3,7 @@
 '''
 @author      : Carlos Carrasquillo
 @created     : February 21, 2021
-@modified    : February 21, 2021
+@modified    : February 22, 2021
 @description : generates a GUI for telecommand selection
 '''
 
@@ -30,6 +30,14 @@ def debug_led_on():
     if confirmation:
         print("Turned on debug LED.")
 
+def update_guidance():
+    confirmation = app_utils.confirm_input('Update Guidance')
+    if confirmation:
+        filename = app_utils.get_filename("Guidance", ".csv")
+        if not filename: return
+        print("Uploading guidance file: " + filename)
+
+
 #---------------------- button callbacks ---------------------#
 def debug_led_toggle_cb():
     start_thread(debug_led_toggle)
@@ -39,3 +47,6 @@ def debug_led_off_cb():
 
 def debug_led_on_cb():
     start_thread(debug_led_on)
+
+def update_guidance_cb():
+    start_thread(update_guidance)
