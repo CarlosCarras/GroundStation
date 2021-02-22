@@ -7,11 +7,11 @@
 @description : transmits the telecommand to the TNC over KISS
 '''
 
-import application
+import app
 
 #import kamxl
 
 
 if __name__ == "__main__":
-    app = application.Application()
+    app = app.Application()
     app.mainloop()
