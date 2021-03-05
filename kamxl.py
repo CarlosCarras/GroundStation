@@ -5,10 +5,12 @@
 @created     : February 21, 2021
 @modified    : February 21, 2021
 @description : transmits and receives the telecommand and data to/from the TNC over KISS
+@source      : https://github.com/ampledata/kiss
 '''
 
+import telecommands
 import kiss
-#import aprs
+import aprs
 
 #------------- Special Characters -------------#
 FEND  = 0xC0
@@ -32,11 +34,17 @@ class KAMXL_TNC():
         self.k = kiss.SerialKISS('/dev/ttyUSB0', 1200)
         self.k.start()                              # inits the TNC, optionally passes KISS config flags.
 
+        self.frame = aprs.Frame()
+        self.frame.source = aprs.Callsign(telecommands.SRC_CALLSIGN)
+        self.frame.destination = aprs.Callsign(telecommands.DST_CALLSIGN)
+        self.frame.path = [aprs.Callsign('WIDE1-1')]
+
     def print_inbound(x):
         print(x)                                    # prints whatever is passed in.
 
     def read(self):
         self.k.read(callback=self.print_inbound)    # reads frames and passes them to `p`
 
-    def write(self, frame):
-        self.k.write(frame)
+    def write(self, text):
+        self.frame.text = text
+        self.k.write(self.frame)

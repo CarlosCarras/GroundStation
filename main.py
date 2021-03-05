@@ -8,6 +8,7 @@
 '''
 
 import app
+import handler
 
 if __name__ == "__main__":
     app = app.Application()

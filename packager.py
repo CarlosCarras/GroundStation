@@ -8,7 +8,9 @@
 '''
 
 import telecommands
+#import kamxl
 
-class Packager():
-    def composeFrame(self, telecommand, params):
-        telecommand = telecommands.Frame(telecommand, params)
+def send_packet(packet):
+    text = packet.telecom + packet.params
+    #kamxl.write(text)
+    print(text)

@@ -9,6 +9,8 @@
 
 import threading
 import app_utils
+import telecommands
+import handler
 
 def start_thread(target):
     x = threading.Thread(target=target)
@@ -36,6 +38,8 @@ def update_guidance():
         filename = app_utils.get_filename("Guidance", ".csv")
         if not filename: return
         print("Uploading guidance file: " + filename)
+
+        handler.transfer_file(telecommands.TELECOM_UPDATEGUIDANCE, filename)
 
 
 #---------------------- button callbacks ---------------------#
