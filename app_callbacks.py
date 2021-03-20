@@ -3,11 +3,12 @@
 '''
 @author      : Carlos Carrasquillo
 @created     : February 21, 2021
-@modified    : February 22, 2021
+@modified    : March 19, 2021
 @description : generates a GUI for telecommand selection
 '''
 
 import threading
+import time
 import app_utils
 import telecommands
 import handler
@@ -37,9 +38,13 @@ def update_guidance():
     if confirmation:
         filename = app_utils.get_filename("Guidance", ".csv")
         if not filename: return
-        print("Uploading guidance file: " + filename)
 
-        handler.transfer_file(telecommands.TELECOM_UPDATEGUIDANCE, filename)
+        time.sleep(1) # artificial delay, not necessary but helps user experience
+        dest = app_utils.get_dir()
+        if not dest: return
+
+        print("Uploading guidance file: " + filename)
+        handler.transfer_file(telecommands.TELECOM_UPLOAD_GUIDANCE, filename, dest)
 
 
 #---------------------- button callbacks ---------------------#

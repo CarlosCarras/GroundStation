@@ -3,12 +3,15 @@ DST_CALLSIGN = 'PYKISS'
 
 FEND = 0xC0
 
-CSV_START = chr(0xB9)
-CSV_END = chr(0xC9)
+ACKNOWLEDGE = 0xBB
+ERROR       = 0x32
 
-TELECOM_UPDATEGUIDANCE = chr(0x27)
+TELECOM_UPLOAD_GUIDANCE	 = 0xC9
+TELECOM_GET_HEALTH       = 0x4C
+TELECOM_OVERRIDE_ANTENNA = 0x6A
+TELECOM_DEBUG_ON         = 0xF0
+TELECOM_DEBUG_OFF        = 0x0F
+TELECOM_DEBUG_TOGGLE     = 0xAA
 
-class Packet():
-    def __init__(self, telecom, params):
-        self.telecom = telecom
-        self.params = params
+SOF = 0x02
+EOF = 0x03

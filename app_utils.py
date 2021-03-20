@@ -55,3 +55,10 @@ def get_filename(filetype, ext=".csv"):
                                           title="Select a " + filetype + " File",
                                           filetypes=((filetype, "*"+ext), ("all files", "*.*")))
     return filename
+
+def get_dir():
+    file_browser = tk.Tk()
+    file_browser.withdraw()
+    filename = filedialog.askdirectory(title="Select a Destination in the BBB Directory", initialdir="./bbb_sim")
+    filename = filename.split("bbb_sim")[1]
+    return filename

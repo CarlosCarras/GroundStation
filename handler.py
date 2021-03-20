@@ -3,21 +3,22 @@
 '''
 @author      : Carlos Carrasquillo
 @created     : March 4, 2021
-@modified    : March 4, 2021
+@modified    : March 19, 2021
 @description : handles telecommand transmission
 '''
 
 import packager
 import telecommands
 
-def send_telecom(telecom, param=None):
-    packet = telecommands.Packet(telecom, param)
-    packager.send_packet(packet)
+def send_telecom(telecom, param="\0"):
+    packager.send_telecom(telecom, param)
 
-def transfer_file(telecom, filename):
-    data = telecommands.CSV_START
+def transfer_file(telecom, filename, dest):
+    data = chr(len(dest))
+    data += dest
+    data += chr(telecommands.SOF)
     with open(filename, 'r') as file:
         data += file.read()
-    data += telecommands.CSV_END
+    data += chr(telecommands.EOF)
 
-    send_telecom(telecom, data)
+    packager.send_telecom(telecom, data)
