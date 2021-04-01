@@ -42,8 +42,6 @@ def check_password(win, password):
 
 def launch_pwd_prompt(win):
     global correct_pwd
-    password = ''
-
     pwdbox = tk.Entry(win, show='*')
 
     def onokclick():

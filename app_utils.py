@@ -7,6 +7,7 @@
 @description : general application utilities
 '''
 
+import threading
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog
@@ -15,6 +16,11 @@ from tkinter import filedialog
 GUI_COLOR = '#0D1B46'
 LOGO = 'assets/adamus-logo.ico'
 WINDOW_NAME = "ADAMUS Ground Station Control Panel"
+
+
+def start_thread(target):
+    x = threading.Thread(target=target)
+    x.start()
 
 
 def add_spacer(win, size=5, bg=GUI_COLOR):
@@ -48,6 +54,7 @@ def confirm_input(telecom_str):
     if response == 'yes': return 1
     return 0
 
+
 def get_filename(filetype, ext=".csv"):
     file_browser = tk.Tk()
     file_browser.withdraw()
@@ -56,9 +63,16 @@ def get_filename(filetype, ext=".csv"):
                                           filetypes=((filetype, "*"+ext), ("all files", "*.*")))
     return filename
 
+
 def get_dir():
     file_browser = tk.Tk()
     file_browser.withdraw()
-    filename = filedialog.askdirectory(title="Select a Destination in the BBB Directory", initialdir="./bbb_sim")
-    filename = filename.split("bbb_sim")[1]
-    return filename
+    dir = filedialog.askdirectory(title="Select a Destination in the BBB Directory", initialdir="./bbb_sim")
+    dir_split = dir.split("bbb_sim")
+    if len(dir_split) != 2: return None
+
+    return dir_split[1]
+
+
+def show_error(title, message):
+    messagebox.showerror(title, message)

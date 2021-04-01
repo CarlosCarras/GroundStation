@@ -7,31 +7,35 @@
 @description : generates a GUI for telecommand selection
 '''
 
-import threading
 import time
 import app_utils
 import telecommands
 import handler
+import listener
 
-def start_thread(target):
-    x = threading.Thread(target=target)
-    x.start()
+
+def await_response():
+    time.sleep(2)
+    listener.listen()
 
 #----------------------- thread targets ----------------------#
 def debug_led_toggle():
     confirmation = app_utils.confirm_input('Toggle Debug LED')
     if confirmation:
         print("Toggled the debug LED.")
+        app_utils.start_thread(await_response)
 
 def debug_led_off():
     confirmation = app_utils.confirm_input('Debug LED Off')
     if confirmation:
         print("Turned off the debug LED.")
+        app_utils.start_thread(await_response)
 
 def debug_led_on():
     confirmation = app_utils.confirm_input('Debug LED On')
     if confirmation:
         print("Turned on debug LED.")
+        app_utils.start_thread(await_response)
 
 def update_guidance():
     confirmation = app_utils.confirm_input('Update Guidance')
@@ -41,21 +45,24 @@ def update_guidance():
 
         time.sleep(1) # artificial delay, not necessary but helps user experience
         dest = app_utils.get_dir()
-        if not dest: return
+        if not dest:
+            app_utils.show_error("File Upload Error", "Unable to place the file in the selected folder.")
+            return
 
         print("Uploading guidance file: " + filename)
         handler.transfer_file(telecommands.TELECOM_UPLOAD_GUIDANCE, filename, dest)
+        app_utils.start_thread(await_response)
 
 
 #---------------------- button callbacks ---------------------#
 def debug_led_toggle_cb():
-    start_thread(debug_led_toggle)
+    app_utils.start_thread(debug_led_toggle)
 
 def debug_led_off_cb():
-    start_thread(debug_led_off)
+    app_utils.start_thread(debug_led_off)
 
 def debug_led_on_cb():
-    start_thread(debug_led_on)
+    app_utils.start_thread(debug_led_on)
 
 def update_guidance_cb():
-    start_thread(update_guidance)
+    app_utils.start_thread(update_guidance)
