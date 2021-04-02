@@ -27,6 +27,7 @@ def check_signal():
 
 def await_signal(win):
     loading_text = tk.Label(win, bg=None)
+
     while(1):
         update_msg(win, loading_text)
         if check_signal():
