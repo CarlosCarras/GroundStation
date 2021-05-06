@@ -12,10 +12,12 @@ import app_utils
 import telecommands
 import handler
 import listener
+import interpreter
 
 def await_response():
     time.sleep(2)
-    listener.listen()
+    incoming = listener.listen()
+    interpreter.handle(incoming)
 
 def debug_led_toggle():
     confirmation = app_utils.confirm_input('Toggle Debug LED')
@@ -27,12 +29,14 @@ def debug_led_toggle():
 def debug_led_off():
     confirmation = app_utils.confirm_input('Debug LED Off')
     if confirmation:
+        handler.send_telecom(telecommands.TELECOM_DEBUG_OFF)
         await_response()
         print("Turned off the debug LED.")
 
 def debug_led_on():
     confirmation = app_utils.confirm_input('Debug LED On')
     if confirmation:
+        handler.send_telecom(telecommands.TELECOM_DEBUG_ON)
         await_response()
         print("Turned on debug LED.")
 

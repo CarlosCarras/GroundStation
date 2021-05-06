@@ -3,14 +3,14 @@
 '''
 @author      : Carlos Carrasquillo
 @created     : March 4, 2021
-@modified    : March 19, 2021
+@modified    : May 6, 2021
 @description : handles telecommand transmission
 '''
 
 import packager
 import telecommands
 
-def send_telecom(telecom, param="\0"):
+def send_telecom(telecom, param=''):
     packager.send_telecom(telecom, param)
 
 def transfer_file(telecom, filename, dest):

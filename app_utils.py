@@ -3,16 +3,20 @@
 '''
 @author      : Carlos Carrasquillo
 @created     : February 22, 2021
-@modified    : February 22, 2021
+@modified    : May 6, 2021
 @description : general application utilities
 '''
 
 import threading
 import tkinter as tk
+import time
 from tkinter import messagebox
 from tkinter import filedialog
+from tkinter.ttk import Progressbar
+from tkinter import ttk
 
 
+GUI_DIMS = "300x150"
 GUI_COLOR = '#0D1B46'
 LOGO = 'assets/adamus-logo.ico'
 WINDOW_NAME = "ADAMUS Ground Station Control Panel"
@@ -58,7 +62,7 @@ def confirm_input(telecom_str):
 def get_filename(filetype, ext=".csv"):
     file_browser = tk.Tk()
     file_browser.withdraw()
-    filename = filedialog.askopenfilename(initialdir=".",
+    filename = filedialog.askopenfilename(initialdir="./assets",
                                           title="Select a " + filetype + " File",
                                           filetypes=((filetype, "*"+ext), ("all files", "*.*")))
     return filename
@@ -75,3 +79,38 @@ def get_dir():
 
 def show_error(title, message):
     messagebox.showerror(title, message)
+
+
+def open_window(title, dims=GUI_DIMS):
+    win = tk.Toplevel()
+    win.title(title)
+    win.geometry(dims)
+    win.iconbitmap(LOGO)
+    center(win)
+    add_spacer(win, bg=None)
+
+    return win
+
+
+def open_busywindow(title, dims=GUI_DIMS):
+    win = open_window(title, dims)
+    win.config(cursor="wait")
+    return win
+
+
+def create_label(win, text, pady=10, bg=None):
+    label = tk.Label(win, text=text)
+    label.pack(pady=pady)
+    return label
+
+
+def openProgressbar(win):
+    progress = Progressbar(win, orient=tk.HORIZONTAL, length=180, mode='determinate')
+    progress.pack(pady=10)
+    time.sleep(1)
+    return progress
+
+def incrementProgressbar(win, progress, inc=50):
+    progress['value'] += inc
+    win.update()
+    time.sleep(1)
