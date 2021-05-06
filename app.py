@@ -19,7 +19,7 @@ PAGE_HEADER = "D3 Telecommands:"
 
 class Application(tk.Frame):
     def __init__(self, master=None):
-        app_security.check_creds()
+        #app_security.check_creds()
 
         if (master == None): master = tk.Tk()
 
@@ -51,10 +51,10 @@ class Application(tk.Frame):
         title.pack(fill=tk.BOTH)
         app_utils.add_spacer(self, 10)
 
-        self.create_button("Toggle Debug LED", app_callbacks.debug_led_toggle_cb)
-        self.create_button("Turn Off Debug LED", app_callbacks.debug_led_off_cb)
-        self.create_button("Turn On Debug LED", app_callbacks.debug_led_on_cb)
-        self.create_button("Update Guidance", app_callbacks.update_guidance_cb)
+        self.create_button("Toggle Debug LED", app_callbacks.debug_led_toggle)
+        self.create_button("Turn Off Debug LED", app_callbacks.debug_led_off)
+        self.create_button("Turn On Debug LED", app_callbacks.debug_led_on)
+        self.create_button("Update Guidance", app_callbacks.update_guidance)
 
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=self.master.destroy)

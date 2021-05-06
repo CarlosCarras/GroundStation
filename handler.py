@@ -14,11 +14,8 @@ def send_telecom(telecom, param="\0"):
     packager.send_telecom(telecom, param)
 
 def transfer_file(telecom, filename, dest):
-    data = chr(len(dest))
-    data += dest
-    data += chr(telecommands.SOF)
     with open(filename, 'r') as file:
-        data += file.read()
-    data += chr(telecommands.EOF)
-
-    packager.send_telecom(telecom, data)
+        data = file.read()
+    dest += '/' + filename.split('/')[-1]
+    packager.send_file(telecom, dest, data)
+    return dest

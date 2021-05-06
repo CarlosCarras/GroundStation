@@ -63,7 +63,6 @@ def get_filename(filetype, ext=".csv"):
                                           filetypes=((filetype, "*"+ext), ("all files", "*.*")))
     return filename
 
-
 def get_dir():
     file_browser = tk.Tk()
     file_browser.withdraw()
