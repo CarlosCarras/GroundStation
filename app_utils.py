@@ -16,7 +16,7 @@ from tkinter.ttk import Progressbar
 from tkinter import ttk
 
 
-GUI_DIMS = "300x150"
+GUI_DIMS = "300x200"
 GUI_COLOR = '#0D1B46'
 LOGO = 'assets/adamus-logo.ico'
 WINDOW_NAME = "ADAMUS Ground Station Control Panel"
@@ -98,9 +98,13 @@ def open_busywindow(title, dims=GUI_DIMS):
     return win
 
 
-def create_label(win, text, pady=10, bg=None):
-    label = tk.Label(win, text=text)
+def create_label(win, text, pady=10, color=None):
+    if color:
+        label = tk.Label(win, text=text, fg=color)
+    else:
+        label = tk.Label(win, text=text)
     label.pack(pady=pady)
+    win.update()
     return label
 
 
@@ -110,7 +114,20 @@ def openProgressbar(win):
     time.sleep(1)
     return progress
 
+
 def incrementProgressbar(win, progress, inc=50):
     progress['value'] += inc
     win.update()
     time.sleep(1)
+
+
+def create_dictionary(win, key, text):
+    frame = tk.Frame(win)
+    frame.pack(fill=tk.X)
+
+    key_label = tk.Label(frame, text=key)
+    key_label.pack(side=tk.LEFT, padx=5, pady=5)
+
+    text_label = tk.Entry(frame)
+    text_label.insert(tk.END, text)
+    text_label.pack(side=tk.LEFT, padx=5, pady=5)

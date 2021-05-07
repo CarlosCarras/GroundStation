@@ -8,14 +8,14 @@
 '''
 
 import packager
-import telecommands
 
 def send_telecom(telecom, param=''):
-    packager.send_telecom(telecom, param)
+    response = packager.send_telecom(telecom, param)
+    return response
 
 def transfer_file(telecom, filename, dest):
     with open(filename, 'r') as file:
         data = file.read()
     dest += '/' + filename.split('/')[-1]
-    packager.send_file(telecom, dest, data)
-    return dest
+    response = packager.send_file(telecom, dest, data)
+    return response

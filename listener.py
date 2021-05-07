@@ -1,7 +1,5 @@
-
 import time
 import app_utils
-from tkinter import messagebox
 
 LOADINGTXT = "Waiting for a response"
 
@@ -9,43 +7,40 @@ LOADER_CNT = 0
 DEBUG_CNT = 0
 
 
-def listen():
-    win = app_utils.open_busywindow("Waiting for Response")
-    await_signal(win)
-    return "Testing!"
+def wait(win):
+    waiting_text = app_utils.create_label(win, LOADINGTXT)
+
+    for i in range(3):  # will try 5 times before failing
+        time.sleep(1)
+        response = check_signal()
+        update_msg(win, waiting_text)
+        if response:
+            return response
+
+    waiting_text.destroy()
+    return None
+
 
 def check_signal():
-    time.sleep(1)
     global DEBUG_CNT
-    if DEBUG_CNT < 8:
+    if DEBUG_CNT < 2:
         DEBUG_CNT += 1
-        return 0
+        return None
     DEBUG_CNT = 0
-    return 1
-
-def await_signal(win):
-    loading_text = app_utils.create_label(win, text="")
-
-    while(1):
-        update_msg(win, loading_text)
-        if check_signal():
-            win.destroy()
-            break
+    return "Testing!"
 
 
-def update_msg(win, loading_text):
+def update_msg(win, text):
     global LOADER_CNT
     trailing = ''
 
-    for i in range(0,LOADER_CNT-1):
-        trailing += '.'
-    if LOADER_CNT > 3:
+    if LOADER_CNT > 2:
         LOADER_CNT = 0
+    for i in range(0, LOADER_CNT + 1):
+        trailing += '.'
 
-    loading_text.config(text=LOADINGTXT + trailing + "\n\n\nDO NOT PROCEED.")
-    loading_text.place()
-    loading_text.pack()
-    print(LOADINGTXT + trailing)
-    LOADER_CNT += 1
+    loading_text = LOADINGTXT + trailing
+    text.config(text=loading_text)
     win.update()
-
+    print(loading_text)
+    LOADER_CNT += 1

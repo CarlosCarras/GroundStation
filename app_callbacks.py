@@ -11,33 +11,27 @@ import time
 import app_utils
 import telecommands
 import handler
-import listener
 import interpreter
-
-def await_response():
-    time.sleep(2)
-    incoming = listener.listen()
-    interpreter.handle(incoming)
 
 def debug_led_toggle():
     confirmation = app_utils.confirm_input('Toggle Debug LED')
     if confirmation:
-        handler.send_telecom(telecommands.TELECOM_DEBUG_TOGGLE)
-        await_response()
+        response = handler.send_telecom(telecommands.TELECOM_DEBUG_TOGGLE)
+        interpreter.interpret(response)
         print("Toggled the debug LED.")
 
 def debug_led_off():
     confirmation = app_utils.confirm_input('Debug LED Off')
     if confirmation:
-        handler.send_telecom(telecommands.TELECOM_DEBUG_OFF)
-        await_response()
+        response = handler.send_telecom(telecommands.TELECOM_DEBUG_OFF)
+        interpreter.interpret(response)
         print("Turned off the debug LED.")
 
 def debug_led_on():
     confirmation = app_utils.confirm_input('Debug LED On')
     if confirmation:
-        handler.send_telecom(telecommands.TELECOM_DEBUG_ON)
-        await_response()
+        response = handler.send_telecom(telecommands.TELECOM_DEBUG_ON)
+        interpreter.interpret(response)
         print("Turned on debug LED.")
 
 def update_guidance():
@@ -52,6 +46,6 @@ def update_guidance():
             app_utils.show_error("File Upload Error", "Unable to place the file in the selected folder.")
             return
 
-        dest = handler.transfer_file(telecommands.TELECOM_UPLOAD_GUIDANCE, filename, dest)
-        await_response()
+        response = handler.transfer_file(telecommands.TELECOM_UPLOAD_GUIDANCE, filename, dest)
+        interpreter.interpret(response)
         print("Uploaded guidance file: " + dest)
