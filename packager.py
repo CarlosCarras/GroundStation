@@ -70,7 +70,7 @@ def send_file(telecom, dest, data):
     len_outbound = len(outbound)
     first_packet_data_len = DATAFIELD_LEN-len_outbound
     if (len_outbound > DATAFIELD_LEN):
-        print("Error: The length of the destination directory is longer than the perimissible length of 251.")
+        print("Error: The length of the destination directory is longer than the permissible length of 251.")
         return
     elif (len_outbound < DATAFIELD_LEN):
         outbound += data[0:first_packet_data_len]
@@ -89,8 +89,8 @@ def send_file(telecom, dest, data):
 
         print("Sending Packet Number: " + str(packet_num))
         progress_txt.config(text="Sending Packet Number: " + str(packet_num))
-        response = send_packet(progress_win, outbound)
         status_label.destroy()
+        response = send_packet(progress_win, outbound)
         status_label = display_status(progress_win, response)
         app_utils.incrementProgressbar(progress_win, progress_bar, inc)
 
