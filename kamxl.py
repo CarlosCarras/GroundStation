@@ -31,13 +31,12 @@ exit_kiss    = 0xFF
 
 class KAMXL_TNC():
     def __init__(self):
-        self.k = kiss.SerialKISS('/dev/ttyUSB0', 1200)
+        self.k = kiss.SerialKISS('/dev/ttyUSB0', 9600)
         self.k.start()                              # inits the TNC, optionally passes KISS config flags.
 
         self.frame = aprs.Frame()
         self.frame.source = aprs.Callsign(telecommands.SRC_CALLSIGN)
         self.frame.destination = aprs.Callsign(telecommands.DST_CALLSIGN)
-        self.frame.path = [aprs.Callsign('WIDE1-1')]
 
     def print_inbound(x):
         print(x)                                    # prints whatever is passed in.
