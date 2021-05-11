@@ -126,7 +126,7 @@ def create_dictionary(win, key, text):
     frame.pack(fill=tk.X)
 
     key_label = tk.Label(frame, text=key)
-    key_label.pack(side=tk.LEFT, padx=5, pady=5)
+    key_label.pack(side=tk.LEFT, padx=20, pady=5)
 
     text_label = tk.Entry(frame)
     text_label.insert(tk.END, text)

@@ -15,6 +15,7 @@ def wait(win):
         response = check_signal()
         update_msg(win, waiting_text)
         if response:
+            waiting_text.destroy()
             return response
 
     waiting_text.destroy()
