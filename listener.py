@@ -1,16 +1,15 @@
+import tnc
 import time
 import app_utils
 
 LOADINGTXT = "Waiting for a response"
-
 LOADER_CNT = 0
-DEBUG_CNT = 0
 
 
 def wait(win):
     waiting_text = app_utils.create_label(win, LOADINGTXT)
 
-    for i in range(3):  # will try 5 times before failing
+    for i in range(3):  # will try 3 times before failing
         time.sleep(1)
         response = check_signal()
         update_msg(win, waiting_text)
@@ -23,12 +22,10 @@ def wait(win):
 
 
 def check_signal():
-    global DEBUG_CNT
-    if DEBUG_CNT < 2:
-        DEBUG_CNT += 1
-        return None
-    DEBUG_CNT = 0
-    return "Testing!"
+    response = tnc.read()
+    if len(response) > 0:
+        return response
+    return None
 
 
 def update_msg(win, text):

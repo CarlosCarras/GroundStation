@@ -3,14 +3,15 @@
 '''
 @author      : Carlos Carrasquillo
 @created     : February 21, 2021
-@modified    : May 6, 2021
+@modified    : May  11, 2021
 @description : creates the KISS frame
 '''
 
 import telecommands
 import app_utils
 import listener
-#import kamxl
+import time
+import tnc
 
 DATAFIELD_LEN = 256
 
@@ -77,6 +78,7 @@ def send_file(telecom, dest, data):
     print("Sending Packet Number: 1")
 
     response = send_packet(progress_win, outbound)
+    app_utils.incrementProgressbar(progress_win, progress_bar, inc)
     status_label = display_status(progress_win, response)
 
     # sending the remaining packets
@@ -109,18 +111,19 @@ def display_status(win, response, label=None):
         status_color = SUCCESS_COLOR
 
     label = app_utils.create_label(win, text=status, color=status_color)
-
+    time.sleep(0.25)
     return label
 
 
 def send_packet(win, outbound):
-    # kamxl.write(packet)
-    print(outbound)
+    tnc.write(outbound)
+    log(outbound)
     response = listener.wait(win)
 
-    #to generate the output.txt file (telecommand testing)
-    file1 = open('output.txt', 'a')
-    file1.write(outbound+'\n')
-    file1.close()
-
     return response
+
+
+def log(outbound):
+    telecom_log = open("assets/D3Telecommands.log", 'a')
+    telecom_log.write(outbound+'\n')
+    telecom_log.close()

@@ -9,9 +9,11 @@
 
 import packager
 
+
 def send_telecom(telecom, param=''):
     response = packager.send_telecom(telecom, param)
     return response
+
 
 def transfer_file(telecom, filename, dest):
     with open(filename, 'r') as file:
