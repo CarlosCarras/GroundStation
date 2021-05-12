@@ -37,15 +37,37 @@ def debug_led_on():
 def update_guidance():
     confirmation = app_utils.confirm_input('Update Guidance')
     if confirmation:
-        filename = app_utils.get_filename("Guidance", ".csv")
+        filename = app_utils.get_filename("Guidance", ext=".csv", initdir="assets")
         if not filename: return
 
-        time.sleep(1)  # artificial delay, not necessary but helps user experience
         dest = app_utils.get_dir()
-        if not dest:
-            app_utils.show_error("File Upload Error", "Unable to place the file in the selected folder.")
+        if not dest: return
+
+        response = handler.uplink_file(telecommands.TELECOM_UPLOAD_FILE, filename, dest)
+        interpreter.interpret(response)
+        print("Uploaded guidance file '" + filename + "' to directory '" + dest + "'.")
+
+def retrieve_file():
+    confirmation = app_utils.confirm_input('Retrieve File')
+    if confirmation:
+        sel = app_utils.important_prompt("Would you like to find the file in the BeagleBone Black simulated "
+                                         "directory? Selecting 'yes' will launch the file browser. Selecting 'no' "
+                                         "will prompt you to first find the destination directory and then manually "
+                                         "enter the filename.")
+        if sel == 1:
+            dest = app_utils.get_filename("All Files", initdir="bbb_sim", filterByDir=True)
+            if not dest: return
+        elif sel == 2:
+            dir = app_utils.get_dir()
+            if not dir: return
+
+            filename = app_utils.get_textentry("Filename Prompt", "Enter the filename of the file to be retrieved.")
+            if not filename: return
+
+            dest = dir + "/" + filename
+        else:
             return
 
-        response = handler.transfer_file(telecommands.TELECOM_UPLOAD_GUIDANCE, filename, dest)
+        response = handler.downlink_file(telecommands.TELECOM_GET_FILE, dest)
         interpreter.interpret(response)
-        print("Uploaded guidance file: " + dest)
+        print("Downloaded file: " + dest)

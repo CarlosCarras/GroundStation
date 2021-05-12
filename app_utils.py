@@ -11,10 +11,9 @@ import threading
 import tkinter as tk
 import time
 from tkinter import messagebox
+from tkinter import simpledialog
 from tkinter import filedialog
 from tkinter.ttk import Progressbar
-from tkinter import ttk
-
 
 GUI_DIMS = "300x200"
 GUI_COLOR = '#0D1B46'
@@ -50,7 +49,7 @@ def center(win):
 
 
 def confirm_input(telecom_str):
-    warning = 'Are you sure you transmit the \'' + telecom_str + '\' telecommand?'
+    warning = 'Are you sure you want to transmit the \'' + telecom_str + '\' telecommand?'
     response = tk.messagebox.askquestion('Transmission Warning',
                                          warning,
                                          icon='warning',
@@ -59,22 +58,51 @@ def confirm_input(telecom_str):
     return 0
 
 
-def get_filename(filetype, ext=".csv"):
+def important_prompt(prompt):
+    response = tk.messagebox.askyesnocancel('Important: Respond to the Following Prompt',
+                                            prompt,
+                                            default='yes')
+    if response is None: return 0
+    if response is True: return 1
+    if response is False: return 2
+    return 0
+
+
+def get_textentry(title, prompt):
+    response = simpledialog.askstring(title, prompt)
+    # time.sleep(1)
+    return response
+
+
+def get_filename(filetype, ext=None, initdir="bbb_sim", filterByDir=False):
+    if ext is None: ext = ".*"
+
     file_browser = tk.Tk()
     file_browser.withdraw()
-    filename = filedialog.askopenfilename(initialdir="./assets",
+    filename = filedialog.askopenfilename(initialdir=initdir,
                                           title="Select a " + filetype + " File",
-                                          filetypes=((filetype, "*"+ext), ("all files", "*.*")))
+                                          filetypes=((filetype, "*" + ext), ("all files", "*.*")))
+
+    if filterByDir:
+        dirsplit = filename.split(initdir)
+        if len(dirsplit) < 2:
+            show_error("File Upload Error", "Unable to place the file in the selected folder.")
+            return None
+        filename = dirsplit[-1]
+
     return filename
+
 
 def get_dir():
     file_browser = tk.Tk()
     file_browser.withdraw()
     dir = filedialog.askdirectory(title="Select a Destination in the BBB Directory", initialdir="./bbb_sim")
     dir_split = dir.split("bbb_sim")
-    if len(dir_split) != 2: return None
+    if len(dir_split) < 2:
+        show_error("File Upload Error", "Unable to place the file in the selected folder.")
+        return None
 
-    return dir_split[1]
+    return dir_split[-1]
 
 
 def show_error(title, message):
@@ -108,17 +136,19 @@ def create_label(win, text, pady=10, color=None):
     return label
 
 
-def openProgressbar(win):
+def open_progressbar(win):
     progress = Progressbar(win, orient=tk.HORIZONTAL, length=180, mode='determinate')
     progress.pack(pady=10)
     time.sleep(1)
     return progress
 
 
-def incrementProgressbar(win, progress, inc=50):
-    progress['value'] += inc
+def increment_progressbar(win, progressbar, inc=50):
+    if inc == -1:
+        progressbar['value'] = 0
+    else:
+        progressbar['value'] += inc
     win.update()
-    time.sleep(1)
 
 
 def create_dictionary(win, key, text):
@@ -131,3 +161,5 @@ def create_dictionary(win, key, text):
     text_label = tk.Entry(frame)
     text_label.insert(tk.END, text)
     text_label.pack(side=tk.LEFT, padx=5, pady=5)
+
+    return {key_label: text_label}

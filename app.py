@@ -55,6 +55,7 @@ class Application(tk.Frame):
         self.create_button("Turn Off Debug LED", app_callbacks.debug_led_off)
         self.create_button("Turn On Debug LED", app_callbacks.debug_led_on)
         self.create_button("Update Guidance", app_callbacks.update_guidance)
+        self.create_button("Retreive File", app_callbacks.retrieve_file)
 
         self.quit = tk.Button(self, text="QUIT", fg="red",
                               command=self.master.destroy)

@@ -23,7 +23,7 @@ def wait(win):
 
 def check_signal():
     response = tnc.read()
-    if len(response) > 0:
+    if response:
         return response
     return None
 
