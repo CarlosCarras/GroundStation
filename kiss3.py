@@ -11,6 +11,7 @@
 '''
 
 import serial
+import time
 
 #------------- Special Characters -------------#
 FEND  = b'\xC0'
@@ -31,40 +32,48 @@ FULL_DUPLEX  = b'\x05'
 SET_HARDWARE = b'\x06'
 EXIT_KISS    = b'\xFF'
 
-
+#---------------- Frame Class -----------------#
 class Frame():
     def __init__(self):
-        self.source = ""
-        self.dest = ""
+        self._source = ""
+        self._dest = ""
         self.text = ""
 
     def set_source(self, callsign):
         if valid_callsign(callsign):
-            self.source = callsign
+            self._source = callsign
         else:
             print("ERROR: The callsign of the source is invalid.")
 
     def set_dest(self, callsign):
         if valid_callsign(callsign):
-            self.dest = callsign
+            self._dest = callsign
         else:
             print("ERROR: The callsign of the destination is invalid.")
 
+    @property
+    def source(self):
+        return self._source
 
+    @property
+    def dest(self):
+        return self._dest
+
+#-------------- SerialKISS Class --------------#
 class SerialKISS():
     def __init__(self, port, speed):
         self._port = port
         self._speed = speed
-        self.interface = None
+        self._interface = None
 
     def start(self):
-        self.interface = serial.Serial(self._port, self._speed)
-        self.interface.timeout = 0.01
+        self._interface = serial.Serial(self._port, self._speed)
+        self._interface.timeout = 0.01
 
     def write(self, frame: Frame):
-        if not frame.source:
+        if not frame._source:
             print("ERROR: The callsign of the source has not been properly set.")
-        if not frame.dest:
+        if not frame._dest:
             print("ERROR: The callsign of the destination has not been properly set.")
         if not frame.text:
             print("INFO: Nothing to send.")
@@ -73,18 +82,17 @@ class SerialKISS():
         frame_str = frame.source + '>' + frame.dest + ':' + frame.text
         escaped_frame = escape_special_codes(frame_str)
         frame_kiss = b''.join([FEND, DATA_FRAME, escaped_frame, FEND])
-        self.interface.write(frame_kiss)
+        self._interface.write(frame_kiss)
 
     def read_handler(self):
-        read_data = self.interface.read(1000)
+        read_data = self._interface.read(1000)
         try:
-            waiting_data = self.interface.in_waiting
+            waiting_data = self._interface.in_waiting
         except AttributeError:
-            waiting_data = self.interface.outWaiting()
+            waiting_data = self._interface.outWaiting()
 
         if waiting_data:
-            read_data += self.interface.read(waiting_data)
-
+            read_data += self._interface.read(waiting_data)
         return read_data
 
     def read(self):
@@ -122,7 +130,8 @@ class SerialKISS():
                             frames.append(buf)
                             read_buffer = bytearray()
 
-                frames = [_f for _f in frames if _f]      # remove None frames.
+                frames = [_f for _f in frames if _f]      # remove None frames
+                log(frames)
 
                 return frames
 
@@ -167,6 +176,7 @@ def escape_special_codes(raw_codes):
         FESC_TFEND
     )
 
+
 def recover_special_codes(escaped_codes):
     return escaped_codes.encode('utf-8').replace(
         FESC_TFESC,
@@ -177,11 +187,12 @@ def recover_special_codes(escaped_codes):
     )
 
 
-def strip_nmea(frame):
-    """
-    Extracts NMEA header from T3-Micro or NMEA encoded KISS frames.
-    """
-    if len(frame) > 0:
-        if frame[0] == 240:
-            return frame[1:].rstrip()
-    return frame
+def log(frames):
+    if not frames: return
+
+    log = open("assets/D3Raw.log", 'a', encoding="utf-8")
+    for i in frames:
+        local_time = time.ctime(time.time())
+        log.write(local_time + ">> " + i + '\n')
+        log.close()
+
