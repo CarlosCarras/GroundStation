@@ -9,25 +9,36 @@
 '''
 
 import telecommands
-import kiss3 as kiss
+import logging
+from aioax25.kiss import SerialKISSDevice
+from aioax25.interface import AX25Interface
+from aioax25.frame import AX25UnnumberedInformationFrame
 
 
 class KAMXL_TNC():
     def __init__(self):
-        self.k = kiss.SerialKISS(port='/dev/cu.usbserial-RTNG2ER', speed='9600')
-        self.k.start()                              # inits the TNC
+        self.kissdev = SerialKISSDevice(
+            device='/dev/ttyS0',
+            baudrate=9600,
+            log=logging.getLogger('./assets/D3_KISS.log'))
+        self.ax25int = AX25Interface(
+            kissport= self.kissdev[0],
+            log=logging.getLogger('./assets/D3_AX25.log'))
+        self.kissdev.open()
 
-        self.frame = kiss.Frame()
-        self.frame.set_source(telecommands.SRC_CALLSIGN)
-        self.frame.set_dest(telecommands.DST_CALLSIGN)
 
     def print_inbound(self, x):
         print(x)                                    # prints whatever is passed in.
 
     def read(self):
-        frames = self.k.read()
-        self.print_inbound(frames)
+        self.print_inbound("Receive not yet implemented.")
 
     def write(self, text):
-        self.frame.text = text
-        self.k.write(self.frame)
+        payload = bytes(text, 'utf-8')
+        frame = AX25UnnumberedInformationFrame(
+            destination=telecommands.DST_CALLSIGN,
+            source=telecommands.SRC_CALLSIGN,
+            pid=0xf0,
+            payload=payload)
+
+        self.ax25int.transmit(frame)

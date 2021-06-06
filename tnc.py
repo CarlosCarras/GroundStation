@@ -22,8 +22,7 @@ def read():
     #
     # if tnc_buffer:
     #     return tnc_buffer.pop(0)
-    # else:
-    #     return None
+    # return None
 
     # for debugging only
     global DEBUG_CNT
