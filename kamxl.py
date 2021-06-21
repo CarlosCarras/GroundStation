@@ -14,10 +14,10 @@ from aioax25.kiss import SerialKISSDevice
 from aioax25.interface import AX25Interface
 from aioax25.frame import AX25UnnumberedInformationFrame
 
-
 class KAMXL_TNC():
     def __init__(self):
-        self.src = telecommands.DST_CALLSIGN
+        self.rxbuf = []
+        self.src = telecommands.SRC_CALLSIGN
         self.dst = telecommands.DST_CALLSIGN
 
         self.kissdev = SerialKISSDevice(
@@ -36,20 +36,20 @@ class KAMXL_TNC():
 
         self.kissdev.open()
 
-    def print_inbound(self, x):
-        print(x)                                    # prints whatever is passed in.
-
     def read(self, interface, frame, **kwargs):
-        self.print_inbound(frame.payload)
-        return frame
+        payload = frame.payload
+        print(payload)
+        self.rxbuf.append(payload)
 
     def write(self, text):
         payload = bytes(text, 'utf-8')
 
+        print(payload)
         frame = AX25UnnumberedInformationFrame(
             destination=self.dst,
             source=self.src,
             pid=0xf0,
             payload=payload)
 
+        print(frame)
         self.ax25int.transmit(frame)

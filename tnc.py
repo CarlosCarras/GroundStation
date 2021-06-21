@@ -15,22 +15,20 @@ DEBUG_CNT = 0
 tnc = kamxl.KAMXL_TNC()
 tnc_buffer = []
 
-def read():
-    # frames = tnc.read()
-    # log(frames)
-    # tnc_buffer.append(frames)
-    #
-    # if tnc_buffer:
-    #     return tnc_buffer.pop(0)
-    # return None
 
-    # for debugging only
-    global DEBUG_CNT
-    if DEBUG_CNT < 4:
-        DEBUG_CNT += 1
-        return None
-    DEBUG_CNT = 0
-    return "@Working!"
+def read():
+    if tnc.rxbuf:
+        return tnc.rxbuf.pop(0)
+    return None
+
+    # # for debugging only
+    # global DEBUG_CNT
+    # if DEBUG_CNT < 4:
+    #     DEBUG_CNT += 1
+    #     return None
+    # DEBUG_CNT = 0
+    # return "@Working!"
+
 
 def write(outbound):
     # for debugging only
