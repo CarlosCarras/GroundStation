@@ -19,7 +19,7 @@ PAGE_HEADER = "D3 Telecommands:"
 
 class Application(tk.Frame):
     def __init__(self, master=None):
-        #app_security.check_creds()
+        app_security.check_creds()
 
         if (master == None): master = tk.Tk()
 

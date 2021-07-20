@@ -5,7 +5,6 @@
 @created     : May 14, 2021
 @modified    : May 14, 2021
 @description : library that composes a KISS packet and transmits it over serial
-
 @disclosure  : This code is a heavily stripped-down version of that found on 'https://github.com/ampledata/kiss'. Huge
                thank you to all of the contributors to that module.
 '''
@@ -82,6 +81,7 @@ class SerialKISS():
         frame_str = frame.source + '>' + frame.dest + ':' + frame.text
         escaped_frame = escape_special_codes(frame_str)
         frame_kiss = b''.join([FEND, DATA_FRAME, escaped_frame, FEND])
+        logOutboundRaw(frame_kiss)
         self._interface.write(frame_kiss)
 
     def read_handler(self):
@@ -131,7 +131,7 @@ class SerialKISS():
                             read_buffer = bytearray()
 
                 frames = [_f for _f in frames if _f]      # remove None frames
-                log(frames)
+                logInboundRaw(frames)
 
                 return frames
 
@@ -186,13 +186,32 @@ def recover_special_codes(escaped_codes):
         FEND
     )
 
+TX_TEST = 0
 
-def log(frames):
+def logOutboundRaw(frame):
+    if not frame:return
+
+    # delete all files in tx_testing directory
+    global TX_TEST
+    dir = "./tx_testing/"
+    if TX_TEST == 0:
+        import os
+        for f in os.listdir(dir):
+            if not f.endswith(".bak"):
+                continue
+            os.remove(os.path.join(dir, f))
+
+    log = open(dir + "txOutput" + str(TX_TEST) + ".log", 'wb')
+    log.write(frame)
+    log.close()
+
+    TX_TEST += 1
+
+def logInboundRaw(frames):
     if not frames: return
 
-    log = open("assets/D3Raw.log", 'a', encoding="utf-8")
+    log = open("assets/D3OutboundRaw.log", 'a', encoding="utf-8")
     for i in frames:
         local_time = time.ctime(time.time())
         log.write(local_time + ">> " + i + '\n')
         log.close()
-
